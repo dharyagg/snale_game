@@ -3,6 +3,14 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout
 import random
 import numpy as np
+class DQNAgent:
+	def __init__(self):
+		self.reward = 0
+		self.gamma = 0.9
+		self.learning_rate = 0.00005
+		self.model = self.network()
+		self.memory = []
+
 
 class DQNAgent:
 	def __init__(self):
@@ -54,7 +62,13 @@ class DQNAgent:
 		# direction
 		state[12] = player[0].direction
 		return np.asarray(state)	
-
+class DQNAgent:
+	def __init__(self):
+		self.reward = 0
+		self.gamma = 0.9
+		self.learning_rate = 0.00005
+		self.model = self.network()
+		self.memory = []
 	def set_reward(self, game):
 		self.reward = 0
 		if game.game_over:
