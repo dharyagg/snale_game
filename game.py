@@ -86,3 +86,65 @@ class Food(pygame.sprite.Sprite):
 	def update(self):
 		self.x = random.randint(40, window_width-60)
 		self.y = random.randint(40, window_height-100)
+def update_screen():
+	global max_score
+	global num_games
+	# increase snake's length on increase in score
+	if game.increase_length:
+		if player[-1].direction == 1:
+			diffx, diffy = 0, -20
+		elif player[-1].direction == 2:
+			diffx, diffy = 0, 20
+		elif player[-1].direction == 3:
+			diffx, diffy = 20, 0
+		elif player[-1].direction == 4:
+			diffx, diffy = -20, 0
+		player.append(Player(game, player[-1].x+diffx, player[-1].y+diffy, player[-1].direction))
+		game.increase_length = False
+	game.screen.fill((255, 255, 255))
+
+	# render score
+	myfont = pygame.font.SysFont('Segoe UI', 25)
+	max_score = max(max_score, game.score)
+	text_score = myfont.render('SCORE: ', True, (0, 0, 0))
+	text_score_number = myfont.render(str(game.score), True, (0, 0, 0))
+	max_score_render = myfont.render('MAX SCORE: ', True, (0, 0, 0))
+	max_score_number = myfont.render(str(max_score), True, (0, 0, 0))
+	tot_games = myfont.render('GAME NUMBER: ', True, (0, 0, 0))
+	tot_games_number = myfont.render(str(num_games), True, (0, 0, 0))
+	game.screen.blit(text_score, (5, window_height-30))
+	game.screen.blit(text_score_number, (80, window_height-30))
+	game.screen.blit(tot_games, (270, window_height-30))
+	game.screen.blit(tot_games_number, (410, window_height-30))
+	game.screen.blit(max_score_render, (120, window_height-30))
+	game.screen.blit(max_score_number, (240, window_height-30))
+	game.screen.blit(game.background_image, [10, 10])
+	game.screen.blit(food.image, (food.x, food.y))
+	
+	# update player position
+	for i in reversed(range(1,len(player))):
+		player[i].update(player[i-1].x, player[i-1].y)
+		game.screen.blit(player[i].image, (player[i].x, player[i].y))
+	player[0].move(food)
+	player[0].update(player[0].x, player[0].y)
+	for i in range(1,len(player)):
+		if player[i].x == player[0].x and player[i].y == player[0].y:
+			game.game_over = True
+	game.screen.blit(player[0].image, (player[0].x, player[0].y))
+	pygame.display.update()
+	
+def event_handler(player, direction):
+	if direction == 0:
+		return
+	player[0].direction = direction
+
+def init(agent, game, player, food):
+	state_init1 = agent.get_state(game, player, food)  
+	action = [0, 0, 0, 0, 1]
+	event_handler(player, np.argmax(np.array(action)))
+	state_init2 = agent.get_state(game, player, food)
+	reward = agent.set_reward(game)
+	# print(reward)
+	agent.memoize(state_init1, action, reward, state_init2, game.game_over)
+	agent.replay_new(agent.memory)
+
