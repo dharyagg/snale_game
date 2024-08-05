@@ -160,3 +160,24 @@ while num_games < 500:
 		agent.epsilon = epsilon - num_games
 		old_state = agent.get_state(game, player, food)
 
+		if random.randint(0, 200) < agent.epsilon:
+			new_direction = to_categorical(random.randint(0, 4), num_classes=5)
+		else:
+			predict = agent.model.predict(old_state.reshape((1,13)))
+			new_direction = to_categorical(np.argmax(predict[0]), num_classes=5)
+		# perform move  
+		event_handler(player, np.argmax(np.array(new_direction)))
+		
+		update_screen()
+
+		new_state = agent.get_state(game, player, food)
+        
+		reward = agent.set_reward(game)
+		agent.train_model(old_state, new_direction, reward, new_state, game.game_over)
+		agent.memoize(old_state, new_direction, reward, new_state, game.game_over)
+		clock.tick(game_speed)
+
+	agent.replay_new(agent.memory)
+	print('Game', num_games, '      Score:', game.score)
+	agent.model.save_weights('weights.hdf5')
+
