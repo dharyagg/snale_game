@@ -86,22 +86,7 @@ class Food(pygame.sprite.Sprite):
 	def update(self):
 		self.x = random.randint(40, window_width-60)
 		self.y = random.randint(40, window_height-100)
-def update_screen():
-	global max_score
-	global num_games
-	# increase snake's length on increase in score
-	if game.increase_length:
-		if player[-1].direction == 1:
-			diffx, diffy = 0, -20
-		elif player[-1].direction == 2:
-			diffx, diffy = 0, 20
-		elif player[-1].direction == 3:
-			diffx, diffy = 20, 0
-		elif player[-1].direction == 4:
-			diffx, diffy = -20, 0
-		player.append(Player(game, player[-1].x+diffx, player[-1].y+diffy, player[-1].direction))
-		game.increase_length = False
-	game.screen.fill((255, 255, 255))
+
 
 	# render score
 	myfont = pygame.font.SysFont('Segoe UI', 25)
