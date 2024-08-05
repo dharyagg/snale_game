@@ -148,3 +148,15 @@ def init(agent, game, player, food):
 	agent.memoize(state_init1, action, reward, state_init2, game.game_over)
 	agent.replay_new(agent.memory)
 
+while num_games < 500:
+	num_games += 1
+	player = []
+	game = Game(window_width, window_height)
+	player.append(Player(game, 0.5 * game.window_width, 0.5 * game.window_height))
+	food = Food(game)
+	init(agent, game, player, food)
+	while game.game_over == False:
+		# for random moves
+		agent.epsilon = epsilon - num_games
+		old_state = agent.get_state(game, player, food)
+
