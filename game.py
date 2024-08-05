@@ -51,28 +51,7 @@ class Player:
 			game.score += 1
 			game.increase_length = True
 			food.update()
-	def move(self, food):
-		self.detect_collision(food);
-		if self.direction == 1:
-			self.delta_x = 0
-			self.delta_y = -self.delta
-		elif self.direction == 2:
-			self.delta_x = 0
-			self.delta_y = self.delta
-		elif self.direction == 3:
-			self.delta_x = -self.delta
-			self.delta_y = 0
-		elif self.direction == 4:
-			self.delta_x = self.delta
-			self.delta_y = 0
-		self.x += self.delta_x
-		self.y += self.delta_y
-		if self.x < 22 or self.y < 20 or self.x > game.window_width - 60 or self.y > game.window_height - 82:
-			game.game_over = True
-
-	def update(self, x, y):
-		self.x = x
-		self.y = y
+	
 		
 class Food(pygame.sprite.Sprite):
 	def __init__(self, game):
